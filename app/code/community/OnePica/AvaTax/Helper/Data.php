@@ -265,11 +265,14 @@ class OnePica_AvaTax_Helper_Data extends Mage_Core_Helper_Abstract
     	static $isMessageSet = false;
     	$message = $this->getErrorMessage($store);
     	
+    	/* conditional added by artwells to ensure Noovias and other cron controllers won't fail*/
+    	if(!empty(Mage::registry('_singleton/core/session'))) {
 		if(Mage::app()->getStore()->isAdmin()) {
-    		if(!$isMessageSet) Mage::getSingleton('adminhtml/session_quote')->addError($message);
+    			if(!$isMessageSet) Mage::getSingleton('adminhtml/session_quote')->addError($message);
 		} else {
 			if(!$isMessageSet) Mage::getSingleton('checkout/session')->addError($message);
 		}
+    	}
     	
     	$isMessageSet = true;
     	return $message;
